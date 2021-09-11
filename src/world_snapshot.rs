@@ -162,7 +162,9 @@ impl WorldSnapshot {
                             reflect_component.apply_component(world, entity, &**component)
                         }
                         // if we don't have any data saved, we need to remove that component from the entity
-                        None => reflect_component.remove_component(world, entity),
+                        None => {
+                            world.entity_mut(entity).remove::<ReflectComponent>();
+                        }
                     }
                 } else {
                     // the entity in the world has no such component
@@ -211,7 +213,10 @@ impl WorldSnapshot {
                             reflect_resource.apply_resource(world, &**snapshot_res);
                         }
                         // if only the world has the resource, but it doesn't exist in the snapshot, remove the resource
-                        None => reflect_resource.remove_resource(world),
+                        None => {
+                            reflect_resource.remove_resource(world);
+                            // world.entity_mut(reflect_resource.unwrap()).remove::<ReflectResource>();
+                        }
                     }
                 }
                 // the world does not have this resource
